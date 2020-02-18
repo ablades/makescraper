@@ -1,15 +1,9 @@
 # 🕷 makescraper
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/YOUR_GITHUB_USERNAME/makescraper)](https://goreportcard.com/report/github.com/YOUR_GITHUB_USERNAME/makescraper)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ablades/makescraper)](https://goreportcard.com/report/github.com/ablades/makescraper)
 
 _Create your very own web scraper and crawler using Go and [Colly](https://go-colly.org)!_
 
-### 📚 Table of Contents
-
-1. [Project Structure](#project-structure)
-2. [Getting Started](#getting-started)
-3. [Deliverables](#deliverables)
-4. [Resources](#resources)
 
 ## Project Structure
 
@@ -19,26 +13,13 @@ _Create your very own web scraper and crawler using Go and [Colly](https://go-co
 └── scrape.go
 ```
 
-## Getting Started
 
-1. Visit [github.com/new](https://github.com/new) and create a new repository named `makescraper`.
-2. Run each command line-by-line in your terminal to set up the project:
-
-    ```bash
-    $ git clone git@github.com:Make-School-Labs/makescraper.git
-    $ cd makescraper
-    $ git remote rm origin
-    $ git remote add origin git@github.com:YOUR_GITHUB_USERNAME/makescraper.git
-    $ go mod download
-    ```
-
-3. Open `README.md` in your editor and replace all instances of `YOUR_GITHUB_USERNAME` with your GitHub username to enable the Go Report Card badge.
 
 ## Deliverables
 
 _Complete each task in the order they appear. Use [GitHub Task List](https://help.github.com/en/github/managing-your-work-on-github/about-task-lists) syntax to update the task list._
 
-### Requirements
+
 
 #### Scraping
 

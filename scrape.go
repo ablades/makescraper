@@ -13,11 +13,11 @@ func main() {
 	c := colly.NewCollector()
 
 	// On every a element which has href attribute call callback
-	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
-                link := e.Attr("href")
+	c.OnHTML("b a[href]", func(e *colly.HTMLElement) {
+		link := e.Attr("href")
+		title := e.Attr("title")
+		fmt.Printf("Link found: %q -> %s\n", title, link)
 
-		// Print link
-                fmt.Printf("Link found: %q -> %s\n", e.Text, link)
 	})
 
 	// Before making a request print "Visiting ..."
@@ -25,6 +25,5 @@ func main() {
 		fmt.Println("Visiting", r.URL.String())
 	})
 
-	// Start scraping on https://hackerspaces.org
-	c.Visit("https://hackerspaces.org/")
+	c.Visit("https://vampirediaries.fandom.com/wiki/Season_One_(Legacies)")
 }
