@@ -1,7 +1,6 @@
 # 🕷 makescraper
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/ablades/makescraper)](https://goreportcard.com/report/github.com/ablades/makescraper)
-
 _Create your very own web scraper and crawler using Go and [Colly](https://go-colly.org)!_
 
 
