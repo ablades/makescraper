@@ -15,7 +15,8 @@ type HomeValues struct {
 }
 
 //Looks at indivdiual cities
-func cityView(link string) {
+func cityView(cityName string, link string) {
+
 	c := colly.NewCollector(
 		// Cache responses to prevent multiple download of pages
 		colly.CacheDir("./cache"),
@@ -26,18 +27,22 @@ func cityView(link string) {
 
 	//On page request
 	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting" + cityLink)
+		fmt.Println("-------------------")
+		fmt.Println("Visiting: " + cityName)
 	})
 
 	//Grab property table
 	c.OnHTML("#propertydetails", func(e *colly.HTMLElement) {
 
-		fmt.Println("Table " + e.Text)
+		//Loop through table data, extract c
+		e.ForEach("#propertydetails tr", func(_ int, el *colly.HTMLElement) {
+			fmt.Println(el.ChildText(".subjectmenutblleft") + el.ChildText(".subjectmenutblright"))
+		})
 		// 	//Iterate over table data
 		// 	e.ForEach("#propertydetails tr", func(_ int, el *colly.HTMLElement) {
 		// 		switch el.ChildText("td:subjectmenutblleft") {
 		// 		case "Language":
-		// 			course.Language = el.ChildText("td:nth-child(2)")
+		// 			course.Language = el.ChildText("td:-child(2)")
 		// 		case "Level":
 		// 			course.Level = el.ChildText("td:nth-child(2)")
 		// 		case "Commitment":
@@ -66,7 +71,7 @@ func stateView() {
 	c.OnHTML(".px11.darkbrown.bold", func(e *colly.HTMLElement) {
 		link := e.Attr("href")
 		fmt.Printf("Link found: %s -> %s \n", e.Text, link)
-		cityView(link)
+		cityView(e.Text, link)
 
 	})
 
