@@ -24,6 +24,7 @@ func cityView(link string) {
 	//Link to a specific city
 	cityLink := fmt.Sprintf("https://www.realestateabc.com%s", link)
 
+	//On page request
 	c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting" + cityLink)
 	})
@@ -33,7 +34,7 @@ func cityView(link string) {
 
 		fmt.Println("Table " + e.Text)
 		// 	//Iterate over table data
-		// 	e.ForEach("table.propertydetails tr", func(_ int, el *colly.HTMLElement) {
+		// 	e.ForEach("#propertydetails tr", func(_ int, el *colly.HTMLElement) {
 		// 		switch el.ChildText("td:subjectmenutblleft") {
 		// 		case "Language":
 		// 			course.Language = el.ChildText("td:nth-child(2)")
