@@ -16,13 +16,41 @@ type HomeValues struct {
 
 //Looks at indivdiual cities
 func cityView(link string) {
-	c := colly.NewCollector()
+	c := colly.NewCollector(
+		// Cache responses to prevent multiple download of pages
+		colly.CacheDir("./cache"),
+	)
 	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting")
+		fmt.Println("Visiting" + link)
 	})
 
-	c.OnHTML("tbody", func(e *colly.HTMLElement) {
-		fmt.Printf("Link found: %s\n", e.Text)
+	c.OnHTML("table propertydetails", func(e *colly.HTMLElement) {
+		//fmt.Printf("Found: ")
+		//e.Attr(".subjectmenutblright")
+		text := e.Attr(".subjectmenutblleft")
+		fmt.Printf(text)
+
+		if e.Attr(".subjectmenutblleft") == "AVG PER SQ FT: " {
+			fmt.Printf("AVG PER SQ FT: %s\n", e.Attr(".subjectmenutblright"))
+		}
+
+		// 	//Iterate over table data
+		// 	e.ForEach("table.propertydetails tr", func(_ int, el *colly.HTMLElement) {
+		// 		switch el.ChildText("td:subjectmenutblleft") {
+		// 		case "Language":
+		// 			course.Language = el.ChildText("td:nth-child(2)")
+		// 		case "Level":
+		// 			course.Level = el.ChildText("td:nth-child(2)")
+		// 		case "Commitment":
+		// 			course.Commitment = el.ChildText("td:nth-child(2)")
+		// 		case "How To Pass":
+		// 			course.HowToPass = el.ChildText("td:nth-child(2)")
+		// 		case "User Ratings":
+		// 			course.Rating = el.ChildText("td:nth-child(2) div:nth-of-type(2)")
+		// 		}
+		// 	})
+		// 	courses = append(courses, course)
+
 	})
 
 	cityLink := fmt.Sprintf("https://www.realestateabc.com%s", link)
