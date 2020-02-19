@@ -6,7 +6,31 @@ import (
 	"github.com/gocolly/colly"
 )
 
-func realestate() {
+//HomeValues of homes for a given city
+type HomeValues struct {
+	cityName   string
+	avgSqft    int
+	twoBDValue int
+	valueIndex int
+}
+
+//Looks at indivdiual cities
+func cityView(link string) {
+	c := colly.NewCollector()
+	c.OnRequest(func(r *colly.Request) {
+		fmt.Println("Visiting")
+	})
+
+	c.OnHTML("tbody", func(e *colly.HTMLElement) {
+		fmt.Printf("Link found: %s\n", e.Text)
+	})
+
+	cityLink := fmt.Sprintf("https://www.realestateabc.com%s", link)
+	c.Visit(cityLink)
+}
+
+//Lots at the current state
+func stateView() {
 	c := colly.NewCollector()
 
 	c.OnRequest(func(r *colly.Request) {
@@ -15,8 +39,9 @@ func realestate() {
 
 	c.OnHTML(".px11.darkbrown.bold", func(e *colly.HTMLElement) {
 		link := e.Attr("href")
-
 		fmt.Printf("Link found: %s -> %s \n", e.Text, link)
+		cityView(link)
+
 	})
 
 	c.Visit("https://www.realestateabc.com/home-values/search/GA")
@@ -48,6 +73,6 @@ func main() {
 
 	//episodeLinks()
 
-	realestate()
+	stateView()
 
 }
