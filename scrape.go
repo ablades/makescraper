@@ -20,20 +20,18 @@ func cityView(link string) {
 		// Cache responses to prevent multiple download of pages
 		colly.CacheDir("./cache"),
 	)
+
+	//Link to a specific city
+	cityLink := fmt.Sprintf("https://www.realestateabc.com%s", link)
+
 	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting" + link)
+		fmt.Println("Visiting" + cityLink)
 	})
 
-	c.OnHTML("table propertydetails", func(e *colly.HTMLElement) {
-		//fmt.Printf("Found: ")
-		//e.Attr(".subjectmenutblright")
-		text := e.Attr(".subjectmenutblleft")
-		fmt.Printf(text)
+	//Grab property table
+	c.OnHTML("#propertydetails", func(e *colly.HTMLElement) {
 
-		if e.Attr(".subjectmenutblleft") == "AVG PER SQ FT: " {
-			fmt.Printf("AVG PER SQ FT: %s\n", e.Attr(".subjectmenutblright"))
-		}
-
+		fmt.Println("Table " + e.Text)
 		// 	//Iterate over table data
 		// 	e.ForEach("table.propertydetails tr", func(_ int, el *colly.HTMLElement) {
 		// 		switch el.ChildText("td:subjectmenutblleft") {
@@ -53,7 +51,6 @@ func cityView(link string) {
 
 	})
 
-	cityLink := fmt.Sprintf("https://www.realestateabc.com%s", link)
 	c.Visit(cityLink)
 }
 
