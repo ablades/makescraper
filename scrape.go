@@ -9,21 +9,21 @@ import (
 )
 
 //CityData of homes for a given city
-type CityData struct {
-	cityName          string
-	avgSqft           int
-	twoBDValue        int
-	propertyTax       int
-	homeValue         int
-	medianCondo       int
-	singleFamilyValue int
+type cityData struct {
+	CityName          string `json:"city name"`
+	AvgSqft           int    `json:"avg sqft"`
+	TwoBDValue        int    `json:"two bedroom value"`
+	PropertyTax       int    `json:"property tax"`
+	HomeValue         int    `json:"zillow home value"`
+	MedianCondo       int    `json:"condo value"`
+	SingleFamilyValue int    `json:"single family value"`
 }
 
 //Looks at indivdiual cities
-func cityView(cityName string, link string) CityData {
+func cityView(cityName string, link string) cityData {
 
 	//Values for a given city
-	var cityValues CityData
+	var cityValues cityData
 
 	c := colly.NewCollector(
 		// Cache responses to prevent multiple download of pages
@@ -84,10 +84,10 @@ func cityView(cityName string, link string) CityData {
 }
 
 //Lots at the current state
-func stateView() []CityData {
+func stateView() []cityData {
 
 	//List of all cities values
-	var valuesList []CityData
+	var valuesList []cityData
 
 	c := colly.NewCollector()
 
@@ -95,12 +95,15 @@ func stateView() []CityData {
 		fmt.Println("Visiting")
 	})
 
+	//
 	c.OnHTML(".px11.darkbrown.bold", func(e *colly.HTMLElement) {
 		link := e.Attr("href")
 		fmt.Printf("Link found: %s -> %s \n", e.Text, link)
 
+		//Visit each city in a state
 		cityData := cityView(e.Text, link)
 
+		//Add city's data to slice
 		valuesList = append(valuesList, cityData)
 
 	})
@@ -110,28 +113,6 @@ func stateView() []CityData {
 	return valuesList
 }
 
-// func episodeLinks() {
-// 	//Manages Network Collection Executes Callbacks
-// 	c := colly.NewCollector()
-
-// 	//On Request
-// 	c.OnRequest(func(r *colly.Request) {
-// 		fmt.Println("Visiting", r.URL.String())
-// 	})
-
-// 	//On Found HTML
-// 	c.OnHTML("b a[href]", func(e *colly.HTMLElement) {
-// 		link := e.Attr("href")
-// 		title := e.Attr("title")
-// 		fmt.Printf("Link found: %q -> %s\n", title, link)
-// 	})
-
-// 	//Website to visit
-// 	c.Visit("https://vampirediaries.fandom.com/wiki/Season_One_(Legacies)")
-// }
-
-// main() contains code adapted from example found in Colly's docs:
-// http://go-colly.org/docs/examples/basic/
 func main() {
 
 	//episodeLinks()
