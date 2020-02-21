@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"strconv"
 	"strings"
 
@@ -135,6 +137,7 @@ func main() {
 
 	//echo Stuff
 	e := echo.New()
+
 	//Get request with a specified id
 	e.GET("/citydata/:id", func(c echo.Context) error {
 		//Convert id to int
@@ -160,9 +163,14 @@ func main() {
 		fmt.Printf("Added %s to DB\n", value.CityName)
 	}
 
-	//homeValuesJSON, _ := json.Marshal(homeValues)
+	//Convert to JSON and write to file
 	fmt.Println("-------------------")
-	fmt.Println("DATA CONVERTED")
+	fmt.Println("Data Converted and written to output.json")
+	homeValuesJSON, _ := json.Marshal(homeValues)
+	ioutil.WriteFile("output.json", homeValuesJSON, 0644)
+
+	fmt.Println("-------------------")
+	fmt.Println("Example: http://localhost:1323/citydata/1")
 	//fmt.Println(homeValuesJSON)
 
 	//Start Echo server and log
