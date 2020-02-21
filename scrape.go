@@ -3,12 +3,13 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/gocolly/colly"
 )
 
-//HomeValues of homes for a given city
-type HomeValues struct {
+//CityData of homes for a given city
+type CityData struct {
 	cityName          string
 	avgSqft           int
 	twoBDValue        int
@@ -19,13 +20,10 @@ type HomeValues struct {
 }
 
 //Looks at indivdiual cities
-func cityView(cityName string, link string) HomeValues {
+func cityView(cityName string, link string) CityData {
 
 	//Values for a given city
-	var cityValues HomeValues
-
-	//List of all cities values
-	var valuesList []HomeValues
+	var cityValues CityData
 
 	c := colly.NewCollector(
 		// Cache responses to prevent multiple download of pages
@@ -51,14 +49,17 @@ func cityView(cityName string, link string) HomeValues {
 		e.ForEach("#propertydetails tr", func(_ int, el *colly.HTMLElement) {
 			fmt.Println(el.ChildText(".subjectmenutblleft") + el.ChildText(".subjectmenutblright"))
 
+			//Text from both columns
 			leftText := el.ChildText(".subjectmenutblleft")
-
-			// Remove $ from text and convert to a fl
 			rightText := el.ChildText(".subjectmenutblright")
+
+			// Remove $ and , from text and convert to an int
+			rightText = strings.ReplaceAll(rightText, ",", "")
 			rightInt, _ := strconv.Atoi(rightText[1:])
 
+			//Set value based on table data
 			switch leftText {
-			case "Zillow Home Value Index:":
+			case "Zillow Home Value Index":
 				cityValues.homeValue = rightInt
 			case "AVG PER SQ FT:":
 				cityValues.avgSqft = rightInt
@@ -72,36 +73,21 @@ func cityView(cityName string, link string) HomeValues {
 				cityValues.twoBDValue = rightInt
 			}
 		})
-		fmt.Println("-------------------")
-		// 	//Iterate over table data
-		// 	e.ForEach("#propertydetails tr", func(_ int, el *colly.HTMLElement) {
-		// 		switch el.ChildText("td:subjectmenutblleft") {
-		// 		case "Language":
-		// 			course.Language = el.ChildText("td:-child(2)")
-		// 		case "Level":
-		// 			course.Level = el.ChildText("td:nth-child(2)")
-		// 		case "Commitment":
-		// 			course.Commitment = el.ChildText("td:nth-child(2)")
-		// 		case "How To Pass":
-		// 			course.HowToPass = el.ChildText("td:nth-child(2)")
-		// 		case "User Ratings":
-		// 			course.Rating = el.ChildText("td:nth-child(2) div:nth-of-type(2)")
-		// 		}
-		// 	})
-		// 	courses = append(courses, course)
-
 	})
 
 	c.Visit(cityLink)
+
+	fmt.Println(cityValues)
+	fmt.Println("-------------------")
 
 	return cityValues
 }
 
 //Lots at the current state
-func stateView() []HomeValues {
+func stateView() []CityData {
 
 	//List of all cities values
-	var valuesList []HomeValues
+	var valuesList []CityData
 
 	c := colly.NewCollector()
 
@@ -113,9 +99,9 @@ func stateView() []HomeValues {
 		link := e.Attr("href")
 		fmt.Printf("Link found: %s -> %s \n", e.Text, link)
 
-		cityValues := cityView(e.Text, link)
+		cityData := cityView(e.Text, link)
 
-		append(valuesList, cityValues)
+		valuesList = append(valuesList, cityData)
 
 	})
 
@@ -150,9 +136,11 @@ func main() {
 
 	//episodeLinks()
 
-	stateView()
+	homeValues := stateView()
+	fmt.Println("-------------------")
+	fmt.Println("STATE DATA COMPILED")
+	print(homeValues)
 
 	//List of all cities values
-	var valuesList []HomeValues
 
 }
