@@ -8,6 +8,7 @@ import (
 	"github.com/gocolly/colly"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/labstack/echo"
 )
 
 //CityData of homes for a given city
@@ -122,7 +123,6 @@ func stateView() []cityData {
 }
 
 func main() {
-
 	//GORM Stuff
 	db, err := gorm.Open("sqlite3", "test.db")
 	if err != nil {
@@ -132,6 +132,21 @@ func main() {
 
 	// Migrate the schema
 	db.AutoMigrate(cityData{})
+
+	//echo Stuff
+	e := echo.New()
+	//Get request with a specified id
+	e.GET("/citydata/:id", func(c echo.Context) error {
+		//Convert id to int
+		pk, _ := strconv.Atoi(c.Param("id"))
+
+		//Get Record from db
+		record := db.First(&cityData{}, pk)
+
+		//return record to user as json
+		return c.JSON(200, record)
+
+	})
 
 	//episodeLinks()
 
@@ -149,5 +164,8 @@ func main() {
 	fmt.Println("-------------------")
 	fmt.Println("DATA CONVERTED")
 	//fmt.Println(homeValuesJSON)
+
+	//Start Echo server and log
+	e.Logger.Fatal(e.Start(":1323"))
 
 }
