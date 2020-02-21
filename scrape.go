@@ -1,16 +1,23 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/gocolly/colly"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 //CityData of homes for a given city
 type cityData struct {
+	//Required gorm fields
+	// ID        uint       `json:"-" gorm:"primary_key"`
+	// CreatedAt time.Time  `json:"-"`
+	// UpdatedAt time.Time  `json:"-"`
+	// DeletedAt *time.Time `json:"-" sql:"index"`
+	gorm.Model
 	CityName          string `json:"city name"`
 	AvgSqft           int    `json:"avg sqft"`
 	TwoBDValue        int    `json:"two bedroom value"`
@@ -27,7 +34,7 @@ func cityView(cityName string, link string) cityData {
 	var cityValues cityData
 
 	c := colly.NewCollector(
-		// Cache responses to prevent multiple download of pages
+		//Cache responses to be nice to realestateabc :)
 		colly.CacheDir("./cache"),
 	)
 
@@ -116,17 +123,31 @@ func stateView() []cityData {
 
 func main() {
 
+	//GORM Stuff
+	db, err := gorm.Open("sqlite3", "test.db")
+	if err != nil {
+		panic("failed to connect database")
+	}
+	defer db.Close()
+
+	// Migrate the schema
+	db.AutoMigrate(cityData{})
+
 	//episodeLinks()
 
 	homeValues := stateView()
 	fmt.Println("STATE DATA COMPILED")
-	fmt.Println(homeValues)
+	//fmt.Println(homeValues)
 
-	homeValuesJSON, _ := json.Marshal(homeValues)
+	for _, value := range homeValues {
+		fmt.Println("-------------------")
+		db.Create(&value)
+		fmt.Printf("Added %s to DB\n", value.CityName)
+	}
+
+	//homeValuesJSON, _ := json.Marshal(homeValues)
 	fmt.Println("-------------------")
 	fmt.Println("DATA CONVERTED")
-	print(string(homeValuesJSON))
-
-	//List of all cities values
+	//fmt.Println(homeValuesJSON)
 
 }
