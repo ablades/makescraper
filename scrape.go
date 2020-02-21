@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -43,7 +44,7 @@ func cityView(cityName string, link string) cityData {
 	c.OnHTML("#propertydetails", func(e *colly.HTMLElement) {
 
 		//Values for a given city
-		cityValues.cityName = cityName
+		cityValues.CityName = cityName
 
 		//Loop through table data,
 		e.ForEach("#propertydetails tr", func(_ int, el *colly.HTMLElement) {
@@ -60,17 +61,17 @@ func cityView(cityName string, link string) cityData {
 			//Set value based on table data
 			switch leftText {
 			case "Zillow Home Value Index":
-				cityValues.homeValue = rightInt
+				cityValues.HomeValue = rightInt
 			case "AVG PER SQ FT:":
-				cityValues.avgSqft = rightInt
+				cityValues.AvgSqft = rightInt
 			case "Property Tax:":
-				cityValues.propertyTax = rightInt
+				cityValues.PropertyTax = rightInt
 			case "Median Condo Value:":
-				cityValues.medianCondo = rightInt
+				cityValues.MedianCondo = rightInt
 			case "Median Single Family Value:":
-				cityValues.singleFamilyValue = rightInt
+				cityValues.SingleFamilyValue = rightInt
 			case "Median 2 BD Value:":
-				cityValues.twoBDValue = rightInt
+				cityValues.TwoBDValue = rightInt
 			}
 		})
 	})
@@ -118,9 +119,13 @@ func main() {
 	//episodeLinks()
 
 	homeValues := stateView()
-	fmt.Println("-------------------")
 	fmt.Println("STATE DATA COMPILED")
-	print(homeValues)
+	fmt.Println(homeValues)
+
+	homeValuesJSON, _ := json.Marshal(homeValues)
+	fmt.Println("-------------------")
+	fmt.Println("DATA CONVERTED")
+	print(string(homeValuesJSON))
 
 	//List of all cities values
 
