@@ -34,7 +34,7 @@ type cityData struct {
 func cityView(cityName string, link string) cityData {
 
 	//Values for a given city
-	var cityValues cityData
+	var city cityData
 
 	c := colly.NewCollector(
 		//Cache responses to be nice to realestateabc :)
@@ -54,7 +54,7 @@ func cityView(cityName string, link string) cityData {
 	c.OnHTML("#propertydetails", func(e *colly.HTMLElement) {
 
 		//Values for a given city
-		cityValues.CityName = cityName
+		city.CityName = cityName
 
 		//Loop through table data,
 		e.ForEach("#propertydetails tr", func(_ int, el *colly.HTMLElement) {
@@ -71,27 +71,27 @@ func cityView(cityName string, link string) cityData {
 			//Set value based on table data
 			switch leftText {
 			case "Zillow Home Value Index":
-				cityValues.HomeValue = rightInt
+				city.HomeValue = rightInt
 			case "AVG PER SQ FT:":
-				cityValues.AvgSqft = rightInt
+				city.AvgSqft = rightInt
 			case "Property Tax:":
-				cityValues.PropertyTax = rightInt
+				city.PropertyTax = rightInt
 			case "Median Condo Value:":
-				cityValues.MedianCondo = rightInt
+				city.MedianCondo = rightInt
 			case "Median Single Family Value:":
-				cityValues.SingleFamilyValue = rightInt
+				city.SingleFamilyValue = rightInt
 			case "Median 2 BD Value:":
-				cityValues.TwoBDValue = rightInt
+				city.TwoBDValue = rightInt
 			}
 		})
 	})
 
 	c.Visit(cityLink)
 
-	fmt.Println(cityValues)
+	fmt.Println(city)
 	fmt.Println("-------------------")
 
-	return cityValues
+	return city
 }
 
 //Lots at the current state
